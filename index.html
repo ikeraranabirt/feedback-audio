@@ -55,10 +55,8 @@
     }
     .player{
       width:100%;
-      min-height:100px;
-      border:0;
-      border-radius:12px;
-      background:#fafafa;
+      height:54px;
+      display:block;
     }
     .error{
       display:none;
@@ -82,12 +80,13 @@
     <h1>Ahots-nota bat duzu entzuteko...</h1>
     <p>Entzun hemen Ikerrek bidalitako ahots-oharra.</p>
 
-    <iframe
+    <audio
       id="player"
       class="player"
-      title="Nota de voz"
-      allow="autoplay">
-    </iframe>
+      controls
+      preload="metadata">
+      Tu navegador no permite reproducir este audio.
+    </audio>
 
     <div id="error" class="error">
       No se ha encontrado un identificador de audio válido.
@@ -113,7 +112,18 @@
     const error = document.getElementById("error");
 
     if (id && /^[A-Za-z0-9]+$/.test(id)) {
-      player.src = "https://vocaroo.com/embed/" + id + "?autoplay=0";
+      // Vocaroo distribuye los audios entre dos dominios de medios.
+      // Cargamos directamente el MP3 para usar el reproductor nativo del navegador.
+      const useMedia1 =
+        id.length === 10 ||
+        (id.length === 12 && id.startsWith("1"));
+
+      const mediaHost = useMedia1
+        ? "media1.vocaroo.com"
+        : "media.vocaroo.com";
+
+      player.src = `https://${mediaHost}/mp3/${id}`;
+      player.load();
     } else {
       player.style.display = "none";
       error.style.display = "block";
