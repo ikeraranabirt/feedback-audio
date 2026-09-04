@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Feedback de audio</title>
+  <meta name="robots" content="noindex,nofollow">
+  <style>
+    :root{
+      color-scheme: light;
+      --bg:#f5f7fb;
+      --card:#ffffff;
+      --text:#172033;
+      --muted:#687386;
+      --border:#e4e8f0;
+      --accent:#2563eb;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      padding:24px;
+      background:var(--bg);
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      color:var(--text);
+    }
+    .card{
+      width:min(620px,100%);
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:28px;
+      box-shadow:0 12px 35px rgba(15,23,42,.08);
+    }
+    .icon{
+      width:48px;
+      height:48px;
+      display:grid;
+      place-items:center;
+      border-radius:14px;
+      background:#eef4ff;
+      font-size:25px;
+      margin-bottom:14px;
+    }
+    h1{
+      margin:0 0 8px;
+      font-size:1.55rem;
+    }
+    p{
+      margin:0 0 20px;
+      color:var(--muted);
+      line-height:1.5;
+    }
+    .player{
+      width:100%;
+      min-height:100px;
+      border:0;
+      border-radius:12px;
+      background:#fafafa;
+    }
+    .error{
+      display:none;
+      padding:14px 16px;
+      border:1px solid #fecaca;
+      background:#fff1f2;
+      color:#991b1b;
+      border-radius:10px;
+      line-height:1.45;
+    }
+    .foot{
+      margin-top:18px;
+      font-size:.85rem;
+      color:#8a94a6;
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <div class="icon">🎧</div>
+    <h1>Feedback de audio</h1>
+    <p>Escucha aquí el comentario sobre tu entrega.</p>
+
+    <iframe
+      id="player"
+      class="player"
+      title="Nota de voz"
+      allow="autoplay">
+    </iframe>
+
+    <div id="error" class="error">
+      No se ha encontrado un identificador de audio válido.
+    </div>
+
+    <div class="foot">Puedes reproducir el audio tantas veces como necesites.</div>
+  </main>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    let id = params.get("id");
+
+    // También admite ?url=https://voca.ro/XXXXXXXX
+    if (!id) {
+      const url = params.get("url");
+      if (url) {
+        const match = url.match(/(?:voca\.ro|vocaroo\.com)\/(?:embed\/)?([A-Za-z0-9]+)/i);
+        if (match) id = match[1];
+      }
+    }
+
+    const player = document.getElementById("player");
+    const error = document.getElementById("error");
+
+    if (id && /^[A-Za-z0-9]+$/.test(id)) {
+      player.src = "https://vocaroo.com/embed/" + id + "?autoplay=0";
+    } else {
+      player.style.display = "none";
+      error.style.display = "block";
+    }
+  </script>
+</body>
+</html>
