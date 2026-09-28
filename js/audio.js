@@ -17,38 +17,49 @@ const alumno =
 const modulo =
   params.get("modulo");
 
+const lang =
+  translations[
+    params.get("lang")
+  ]
+    ? params.get("lang")
+    : "eu";
+
 
 const saludo =
-  document.getElementById("saludo");
+  document.getElementById(
+    "saludo"
+  );
 
 const mensajeAudio =
-  document.getElementById("mensajeAudio");
+  document.getElementById(
+    "mensajeAudio"
+  );
 
 const player =
-  document.getElementById("player");
+  document.getElementById(
+    "player"
+  );
 
 const error =
-  document.getElementById("error");
+  document.getElementById(
+    "error"
+  );
 
 
-/**
- * Compatibilidad con enlaces antiguos
- * que utilicen ?url=https://voca.ro/...
- */
 function obtenerIdDesdeUrl() {
 
   const url =
     params.get("url");
-
 
   if (!url) {
     return null;
   }
 
 
-  const match = url.match(
-    /(?:voca\.ro|vocaroo\.com)\/(?:embed\/)?([A-Za-z0-9]+)/i
-  );
+  const match =
+    url.match(
+      /(?:voca\.ro|vocaroo\.com)\/(?:embed\/)?([A-Za-z0-9]+)/i
+    );
 
 
   if (!match) {
@@ -60,40 +71,59 @@ function obtenerIdDesdeUrl() {
 }
 
 
-/**
- * Personaliza el mensaje mostrado al alumno.
- */
 function mostrarMensaje() {
+
+  aplicarIdioma(
+    lang
+  );
+
 
   if (alumno) {
 
     saludo.textContent =
-      `Kaixo ${alumno}:`;
+      translations[
+        lang
+      ].greeting(
+        alumno
+      );
+
   }
 
 
-  if (nombre && modulo) {
+  if (
+    nombre &&
+    modulo
+  ) {
 
     mensajeAudio.textContent =
-      `${nombre}, zure ${modulo} irakaslea ahots-ohar bat bidali dizu...`;
+      translations[
+        lang
+      ].teacherMessage(
+        nombre,
+        modulo
+      );
 
   } else if (nombre) {
 
     mensajeAudio.textContent =
-      `${nombre}, zure irakaslea ahots-ohar bat bidali dizu...`;
+      translations[
+        lang
+      ].teacherMessageNoModule(
+        nombre
+      );
+
   }
+
 }
 
 
-/**
- * Carga el reproductor de Vocaroo.
- */
 function cargarAudio() {
 
   if (!id) {
 
     id =
       obtenerIdDesdeUrl();
+
   }
 
 
@@ -117,8 +147,6 @@ function cargarAudio() {
 }
 
 
-/**
- * Inicialización.
- */
 mostrarMensaje();
+
 cargarAudio();

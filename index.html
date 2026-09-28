@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="es">
+<html lang="eu">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Generador de notas de voz</title>
+  <title>Ahots-oharren sortzailea</title>
 
   <link rel="stylesheet" href="./css/styles.css">
 </head>
@@ -13,52 +13,114 @@
 
   <main class="card">
 
-    <h1>Generador de notas de voz</h1>
+    <header class="page-header">
 
-    <p class="intro">
-      Introduce los datos y el enlace de la grabación de Vocaroo.
-    </p>
+      <div>
+        <h1 data-i18n="generatorTitle">
+          Ahots-oharren sortzailea
+        </h1>
+
+        <p
+          class="intro"
+          data-i18n="generatorIntro"
+        >
+          Sartu datuak eta Vocaroo grabazioaren esteka.
+        </p>
+      </div>
+
+      <div
+        class="language-selector"
+        aria-label="Idioma"
+      >
+        <button
+          type="button"
+          class="language-button active"
+          data-lang="eu"
+        >
+          EUS
+        </button>
+
+        <button
+          type="button"
+          class="language-button"
+          data-lang="es"
+        >
+          ES
+        </button>
+      </div>
+
+    </header>
 
     <form id="form">
 
       <div class="field">
-        <label for="nombre">Nombre del profesor</label>
+
+        <label
+          for="nombre"
+          data-i18n="teacherName"
+        >
+          Irakaslearen izena
+        </label>
 
         <input
           type="text"
           id="nombre"
           name="nombre"
-          placeholder="Ej. Iker"
+          data-i18n-placeholder="teacherPlaceholder"
+          placeholder="Adib. Iker"
           required
         >
+
       </div>
 
       <div class="field">
-        <label for="alumno">Nombre del alumno</label>
+
+        <label
+          for="alumno"
+          data-i18n="studentName"
+        >
+          Ikaslearen izena
+        </label>
 
         <input
           type="text"
           id="alumno"
           name="alumno"
-          placeholder="Ej. Ane"
+          data-i18n-placeholder="studentPlaceholder"
+          placeholder="Adib. Ane"
           required
         >
+
       </div>
 
       <div class="field">
-        <label for="modulo">Módulo</label>
+
+        <label
+          for="modulo"
+          data-i18n="module"
+        >
+          Modulua
+        </label>
 
         <input
           type="text"
           id="modulo"
           name="modulo"
-          placeholder="Ej. DWEC"
+          data-i18n-placeholder="modulePlaceholder"
+          placeholder="Adib. DWEC"
           required
         >
+
       </div>
 
       <div class="field">
-        <label for="vocaroo">Enlace de Vocaroo</label>
+
+        <label
+          for="vocaroo"
+          data-i18n="vocarooLink"
+        >
+          Vocaroo esteka
+        </label>
 
         <input
           type="url"
@@ -67,24 +129,30 @@
           placeholder="https://voca.ro/15inrlPfVT7C"
           required
         >
+
       </div>
 
       <button
         type="submit"
         class="btn-primary"
+        data-i18n="generateLink"
       >
-        Generar enlace
+        Esteka sortu
       </button>
 
     </form>
 
     <section class="resultado">
 
-      <h2>Resultado</h2>
+      <h2 data-i18n="resultTitle">
+        Emaitza
+      </h2>
 
-      <p class="resultado-texto">
-        Genera primero el enlace. Después podrás comprobar el resultado
-        y copiar el enlace que enviarás al alumno.
+      <p
+        class="resultado-texto"
+        data-i18n="resultHelp"
+      >
+        Sortu esteka lehenik. Ondoren emaitza egiaztatu edo ikaslearentzako esteka kopiatu ahal izango duzu.
       </p>
 
       <div class="acciones">
@@ -93,30 +161,37 @@
           type="button"
           id="verResultado"
           class="btn-secondary"
+          data-i18n="viewResult"
           disabled
         >
-          Ver resultado
+          Emaitza ikusi
         </button>
 
         <button
           type="button"
           id="copiar"
           class="btn-primary"
+          data-i18n="copyStudentLink"
           disabled
         >
-          Copiar enlace para el alumno
+          Ikaslearentzako esteka kopiatu
         </button>
 
       </div>
 
-      <div id="mensaje" class="mensaje">
-        Enlace copiado al portapapeles.
+      <div
+        id="mensaje"
+        class="mensaje"
+        data-i18n="copied"
+      >
+        Esteka arbelean kopiatu da.
       </div>
 
     </section>
 
   </main>
 
+  <script src="./js/i18n.js"></script>
   <script src="./js/generator.js"></script>
 
 </body>

@@ -1,20 +1,63 @@
-const form = document.getElementById("form");
+const form =
+  document.getElementById("form");
 
-const verResultado = document.getElementById("verResultado");
-const copiar = document.getElementById("copiar");
-const mensaje = document.getElementById("mensaje");
+const verResultado =
+  document.getElementById("verResultado");
+
+const copiar =
+  document.getElementById("copiar");
+
+const mensaje =
+  document.getElementById("mensaje");
+
+const languageButtons =
+  document.querySelectorAll(
+    ".language-button"
+  );
+
 
 let enlaceGenerado = "";
 
-/**
- * Extrae el identificador de una URL de Vocaroo.
- *
- * Admite, por ejemplo:
- *
- * https://voca.ro/XXXXXXXX
- * https://vocaroo.com/XXXXXXXX
- * https://vocaroo.com/embed/XXXXXXXX
- */
+let idiomaActual = "eu";
+
+
+function cambiarIdioma(lang) {
+
+  idiomaActual = lang;
+
+  aplicarIdioma(lang);
+
+  languageButtons.forEach(button => {
+
+    button.classList.toggle(
+      "active",
+      button.dataset.lang === lang
+    );
+
+  });
+
+
+  mensaje.style.display =
+    "none";
+}
+
+
+languageButtons.forEach(button => {
+
+  button.addEventListener(
+    "click",
+    function () {
+
+      cambiarIdioma(
+        button.dataset.lang
+      );
+
+    }
+  );
+
+});
+
+
 function obtenerIdVocaroo(url) {
 
   const match = url.match(
@@ -29,17 +72,12 @@ function obtenerIdVocaroo(url) {
 }
 
 
-/**
- * Construye la URL de audio.html.
- *
- * Se utiliza una URL relativa para que funcione
- * tanto en local como en GitHub Pages.
- */
 function generarUrlAudio({
   id,
   nombre,
   alumno,
-  modulo
+  modulo,
+  lang
 }) {
 
   const url = new URL(
@@ -47,132 +85,199 @@ function generarUrlAudio({
     window.location.href
   );
 
-  url.searchParams.set("id", id);
-  url.searchParams.set("nombre", nombre);
-  url.searchParams.set("alumno", alumno);
-  url.searchParams.set("modulo", modulo);
+  url.searchParams.set(
+    "id",
+    id
+  );
+
+  url.searchParams.set(
+    "nombre",
+    nombre
+  );
+
+  url.searchParams.set(
+    "alumno",
+    alumno
+  );
+
+  url.searchParams.set(
+    "modulo",
+    modulo
+  );
+
+  url.searchParams.set(
+    "lang",
+    lang
+  );
 
   return url.toString();
 }
 
 
-/**
- * Activa las acciones disponibles una vez
- * generado correctamente el enlace.
- */
 function activarAcciones() {
 
-  verResultado.disabled = false;
-  copiar.disabled = false;
+  verResultado.disabled =
+    false;
 
-  mensaje.style.display = "none";
+  copiar.disabled =
+    false;
+
+  mensaje.style.display =
+    "none";
 }
 
 
-/**
- * Copia un texto al portapapeles.
- */
 async function copiarAlPortapapeles(texto) {
 
   try {
 
-    await navigator.clipboard.writeText(texto);
+    await navigator.clipboard.writeText(
+      texto
+    );
 
   } catch {
 
-    const textarea = document.createElement("textarea");
+    const textarea =
+      document.createElement(
+        "textarea"
+      );
 
-    textarea.value = texto;
+    textarea.value =
+      texto;
 
-    document.body.appendChild(textarea);
+    document.body.appendChild(
+      textarea
+    );
 
     textarea.select();
 
-    document.execCommand("copy");
+    document.execCommand(
+      "copy"
+    );
 
     textarea.remove();
   }
+
 }
 
 
-/**
- * Procesa el formulario.
- */
-form.addEventListener("submit", function (event) {
+form.addEventListener(
+  "submit",
+  function (event) {
 
-  event.preventDefault();
-
-  const nombre =
-    document.getElementById("nombre").value.trim();
-
-  const alumno =
-    document.getElementById("alumno").value.trim();
-
-  const modulo =
-    document.getElementById("modulo").value.trim();
-
-  const vocaroo =
-    document.getElementById("vocaroo").value.trim();
+    event.preventDefault();
 
 
-  const id = obtenerIdVocaroo(vocaroo);
+    const nombre =
+      document
+        .getElementById("nombre")
+        .value
+        .trim();
 
 
-  if (!id) {
+    const alumno =
+      document
+        .getElementById("alumno")
+        .value
+        .trim();
 
-    alert(
-      "Introduce un enlace válido de Vocaroo."
+
+    const modulo =
+      document
+        .getElementById("modulo")
+        .value
+        .trim();
+
+
+    const vocaroo =
+      document
+        .getElementById("vocaroo")
+        .value
+        .trim();
+
+
+    const id =
+      obtenerIdVocaroo(
+        vocaroo
+      );
+
+
+    if (!id) {
+
+      alert(
+        translations[
+          idiomaActual
+        ].invalidVocaroo
+      );
+
+      return;
+    }
+
+
+    enlaceGenerado =
+      generarUrlAudio({
+
+        id,
+        nombre,
+        alumno,
+        modulo,
+        lang:
+          idiomaActual
+
+      });
+
+
+    activarAcciones();
+
+  }
+);
+
+
+verResultado.addEventListener(
+  "click",
+  function () {
+
+    if (!enlaceGenerado) {
+      return;
+    }
+
+    window.open(
+      enlaceGenerado,
+      "_blank",
+      "noopener,noreferrer"
     );
 
-    return;
   }
+);
 
 
-  enlaceGenerado = generarUrlAudio({
-    id,
-    nombre,
-    alumno,
-    modulo
-  });
+copiar.addEventListener(
+  "click",
+  async function () {
+
+    if (!enlaceGenerado) {
+      return;
+    }
 
 
-  activarAcciones();
-});
+    await copiarAlPortapapeles(
+      enlaceGenerado
+    );
 
 
-/**
- * Vista previa de la página que verá el alumno.
- */
-verResultado.addEventListener("click", function () {
+    mensaje.textContent =
+      translations[
+        idiomaActual
+      ].copied;
 
-  if (!enlaceGenerado) {
-    return;
+
+    mensaje.style.display =
+      "block";
+
   }
-
-  window.open(
-    enlaceGenerado,
-    "_blank",
-    "noopener,noreferrer"
-  );
-});
+);
 
 
-/**
- * Copia el enlace destinado al alumno.
- */
-copiar.addEventListener("click", async function () {
-
-  if (!enlaceGenerado) {
-    return;
-  }
-
-  await copiarAlPortapapeles(
-    enlaceGenerado
-  );
-
-
-  mensaje.textContent =
-    "Enlace copiado al portapapeles.";
-
-  mensaje.style.display = "block";
-});
+cambiarIdioma(
+  idiomaActual
+);
