@@ -14,6 +14,7 @@
       --muted: #687386;
       --border: #e4e8f0;
       --accent: #2563eb;
+      --accent-hover: #1d4ed8;
       --success-bg: #ecfdf5;
       --success-border: #a7f3d0;
       --success-text: #065f46;
@@ -84,42 +85,75 @@
       padding: 12px 16px;
       border: 0;
       border-radius: 10px;
-      background: var(--accent);
-      color: white;
       font: inherit;
       font-weight: 600;
       cursor: pointer;
+      transition: .15s ease;
     }
 
-    button:hover {
-      filter: brightness(.96);
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: var(--accent-hover);
+    }
+
+    .btn-secondary {
+      background: white;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+      background: #eff6ff;
+    }
+
+    button:disabled {
+      opacity: .45;
+      cursor: not-allowed;
     }
 
     .resultado {
-      display: none;
       margin-top: 24px;
-      padding: 18px;
-      border: 1px solid var(--success-border);
-      border-radius: 12px;
-      background: var(--success-bg);
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
     }
 
     .resultado h2 {
-      margin: 0 0 10px;
-      font-size: 1rem;
-      color: var(--success-text);
+      margin: 0 0 8px;
+      font-size: 1.1rem;
     }
 
-    .resultado input {
-      margin-bottom: 10px;
-      background: white;
+    .resultado-texto {
+      margin: 0 0 16px;
+      color: var(--muted);
+      font-size: .92rem;
+      line-height: 1.5;
+    }
+
+    .acciones {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
     }
 
     .mensaje {
-      min-height: 1.4em;
-      margin-top: 10px;
+      display: none;
+      margin-top: 14px;
+      padding: 10px 12px;
+      background: var(--success-bg);
+      border: 1px solid var(--success-border);
+      border-radius: 8px;
       color: var(--success-text);
       font-size: .9rem;
+    }
+
+    @media (max-width: 520px) {
+      .acciones {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
@@ -131,7 +165,7 @@
     <h1>Generador de notas de voz</h1>
 
     <p class="intro">
-      Introduce tus datos y el enlace de la grabación de Vocaroo.
+      Introduce los datos y el enlace de la grabación de Vocaroo.
     </p>
 
     <form id="form">
@@ -143,6 +177,17 @@
           id="nombre"
           name="nombre"
           placeholder="Ej. Iker"
+          required
+        >
+      </div>
+
+      <div class="field">
+        <label for="alumno">Nombre del alumno</label>
+        <input
+          type="text"
+          id="alumno"
+          name="alumno"
+          placeholder="Ej. Ane"
           required
         >
       </div>
@@ -169,43 +214,84 @@
         >
       </div>
 
-      <button type="submit">
+      <button
+        type="submit"
+        class="btn-primary"
+      >
         Generar enlace
       </button>
 
     </form>
 
-    <section id="resultado" class="resultado">
-      <h2>Enlace generado</h2>
+    <section class="resultado">
 
-      <input
-        type="text"
-        id="enlaceGenerado"
-        readonly
-      >
+      <h2>Resultado</h2>
 
-      <button type="button" id="copiar">
-        Copiar enlace
-      </button>
+      <p class="resultado-texto">
+        Genera primero el enlace. Después podrás comprobar el resultado
+        y copiar el enlace que enviarás al alumno.
+      </p>
 
-      <div id="mensaje" class="mensaje"></div>
+      <div class="acciones">
+
+        <button
+          type="button"
+          id="verResultado"
+          class="btn-secondary"
+          disabled
+        >
+          Ver resultado
+        </button>
+
+        <button
+          type="button"
+          id="copiar"
+          class="btn-primary"
+          disabled
+        >
+          Copiar enlace para el alumno
+        </button>
+
+      </div>
+
+      <div id="mensaje" class="mensaje">
+        Enlace copiado al portapapeles.
+      </div>
+
     </section>
 
   </main>
 
   <script>
     const form = document.getElementById("form");
-    const resultado = document.getElementById("resultado");
-    const enlaceGenerado = document.getElementById("enlaceGenerado");
+    const verResultado = document.getElementById("verResultado");
     const copiar = document.getElementById("copiar");
     const mensaje = document.getElementById("mensaje");
+
+    let enlaceGenerado = "";
 
     form.addEventListener("submit", function (event) {
       event.preventDefault();
 
-      const nombre = document.getElementById("nombre").value.trim();
-      const modulo = document.getElementById("modulo").value.trim();
-      const vocaroo = document.getElementById("vocaroo").value.trim();
+      const nombre = document
+        .getElementById("nombre")
+        .value
+        .trim();
+
+      const alumno = document
+        .getElementById("alumno")
+        .value
+        .trim();
+
+      const modulo = document
+        .getElementById("modulo")
+        .value
+        .trim();
+
+      const vocaroo = document
+        .getElementById("vocaroo")
+        .value
+        .trim();
 
       const match = vocaroo.match(
         /(?:voca\.ro|vocaroo\.com)\/(?:embed\/)?([A-Za-z0-9]+)/i
@@ -218,27 +304,77 @@
 
       const id = match[1];
 
-      const url = new URL("audio.html", window.location.href);
+      /*
+       * URL relativa:
+       *
+       * En local:
+       * http://127.0.0.1:5500/audio.html?...
+       *
+       * En GitHub Pages:
+       * https://ikeraranabirt.github.io/feedback-audio/audio.html?...
+       *
+       * No hay que cambiar el código entre entornos.
+       */
+      const url = new URL(
+        "./audio.html",
+        window.location.href
+      );
 
       url.searchParams.set("id", id);
       url.searchParams.set("nombre", nombre);
+      url.searchParams.set("alumno", alumno);
       url.searchParams.set("modulo", modulo);
 
-      enlaceGenerado.value = url.toString();
-      resultado.style.display = "block";
-      mensaje.textContent = "";
+      enlaceGenerado = url.toString();
+
+      verResultado.disabled = false;
+      copiar.disabled = false;
+
+      mensaje.style.display = "none";
+    });
+
+    verResultado.addEventListener("click", function () {
+      if (!enlaceGenerado) {
+        return;
+      }
+
+      window.open(
+        enlaceGenerado,
+        "_blank",
+        "noopener,noreferrer"
+      );
     });
 
     copiar.addEventListener("click", async function () {
-      try {
-        await navigator.clipboard.writeText(enlaceGenerado.value);
+      if (!enlaceGenerado) {
+        return;
+      }
 
-        mensaje.textContent = "Enlace copiado al portapapeles.";
+      try {
+        await navigator.clipboard.writeText(enlaceGenerado);
+
+        mensaje.textContent =
+          "Enlace copiado al portapapeles.";
+
+        mensaje.style.display = "block";
+
       } catch (error) {
-        enlaceGenerado.select();
+        const textarea = document.createElement("textarea");
+
+        textarea.value = enlaceGenerado;
+
+        document.body.appendChild(textarea);
+
+        textarea.select();
+
         document.execCommand("copy");
 
-        mensaje.textContent = "Enlace copiado al portapapeles.";
+        textarea.remove();
+
+        mensaje.textContent =
+          "Enlace copiado al portapapeles.";
+
+        mensaje.style.display = "block";
       }
     });
   </script>
