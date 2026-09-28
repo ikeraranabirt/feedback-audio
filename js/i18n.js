@@ -3,7 +3,7 @@ const translations = {
   eu: {
 
     generatorTitle:
-      "Ahots-oharren sortzailea",
+      "Ahots-ohar sortzailea",
 
     generatorIntro:
       "Sartu datuak eta Vocaroo grabazioaren esteka.",
