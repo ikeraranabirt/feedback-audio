@@ -6,156 +6,7 @@
 
   <title>Generador de notas de voz</title>
 
-  <style>
-    :root {
-      --bg: #f5f7fb;
-      --card: #ffffff;
-      --text: #172033;
-      --muted: #687386;
-      --border: #e4e8f0;
-      --accent: #2563eb;
-      --accent-hover: #1d4ed8;
-      --success-bg: #ecfdf5;
-      --success-border: #a7f3d0;
-      --success-text: #065f46;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      padding: 24px;
-      background: var(--bg);
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      color: var(--text);
-    }
-
-    .card {
-      width: min(620px, 100%);
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 28px;
-      box-shadow: 0 12px 35px rgba(15, 23, 42, .08);
-    }
-
-    h1 {
-      margin: 0 0 8px;
-      font-size: 1.8rem;
-    }
-
-    .intro {
-      margin: 0 0 24px;
-      color: var(--muted);
-      line-height: 1.5;
-    }
-
-    .field {
-      margin-bottom: 18px;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 6px;
-      font-weight: 600;
-    }
-
-    input {
-      width: 100%;
-      padding: 12px 14px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      font: inherit;
-      color: var(--text);
-      background: white;
-    }
-
-    input:focus {
-      outline: 2px solid #bfdbfe;
-      border-color: var(--accent);
-    }
-
-    button {
-      width: 100%;
-      padding: 12px 16px;
-      border: 0;
-      border-radius: 10px;
-      font: inherit;
-      font-weight: 600;
-      cursor: pointer;
-      transition: .15s ease;
-    }
-
-    .btn-primary {
-      background: var(--accent);
-      color: white;
-    }
-
-    .btn-primary:hover:not(:disabled) {
-      background: var(--accent-hover);
-    }
-
-    .btn-secondary {
-      background: white;
-      color: var(--accent);
-      border: 1px solid var(--accent);
-    }
-
-    .btn-secondary:hover:not(:disabled) {
-      background: #eff6ff;
-    }
-
-    button:disabled {
-      opacity: .45;
-      cursor: not-allowed;
-    }
-
-    .resultado {
-      margin-top: 24px;
-      padding-top: 24px;
-      border-top: 1px solid var(--border);
-    }
-
-    .resultado h2 {
-      margin: 0 0 8px;
-      font-size: 1.1rem;
-    }
-
-    .resultado-texto {
-      margin: 0 0 16px;
-      color: var(--muted);
-      font-size: .92rem;
-      line-height: 1.5;
-    }
-
-    .acciones {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    .mensaje {
-      display: none;
-      margin-top: 14px;
-      padding: 10px 12px;
-      background: var(--success-bg);
-      border: 1px solid var(--success-border);
-      border-radius: 8px;
-      color: var(--success-text);
-      font-size: .9rem;
-    }
-
-    @media (max-width: 520px) {
-      .acciones {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="./css/styles.css">
 </head>
 
 <body>
@@ -172,6 +23,7 @@
 
       <div class="field">
         <label for="nombre">Nombre del profesor</label>
+
         <input
           type="text"
           id="nombre"
@@ -183,6 +35,7 @@
 
       <div class="field">
         <label for="alumno">Nombre del alumno</label>
+
         <input
           type="text"
           id="alumno"
@@ -194,6 +47,7 @@
 
       <div class="field">
         <label for="modulo">Módulo</label>
+
         <input
           type="text"
           id="modulo"
@@ -205,6 +59,7 @@
 
       <div class="field">
         <label for="vocaroo">Enlace de Vocaroo</label>
+
         <input
           type="url"
           id="vocaroo"
@@ -262,122 +117,7 @@
 
   </main>
 
-  <script>
-    const form = document.getElementById("form");
-    const verResultado = document.getElementById("verResultado");
-    const copiar = document.getElementById("copiar");
-    const mensaje = document.getElementById("mensaje");
-
-    let enlaceGenerado = "";
-
-    form.addEventListener("submit", function (event) {
-      event.preventDefault();
-
-      const nombre = document
-        .getElementById("nombre")
-        .value
-        .trim();
-
-      const alumno = document
-        .getElementById("alumno")
-        .value
-        .trim();
-
-      const modulo = document
-        .getElementById("modulo")
-        .value
-        .trim();
-
-      const vocaroo = document
-        .getElementById("vocaroo")
-        .value
-        .trim();
-
-      const match = vocaroo.match(
-        /(?:voca\.ro|vocaroo\.com)\/(?:embed\/)?([A-Za-z0-9]+)/i
-      );
-
-      if (!match) {
-        alert("Introduce un enlace válido de Vocaroo.");
-        return;
-      }
-
-      const id = match[1];
-
-      /*
-       * URL relativa:
-       *
-       * En local:
-       * http://127.0.0.1:5500/audio.html?...
-       *
-       * En GitHub Pages:
-       * https://ikeraranabirt.github.io/feedback-audio/audio.html?...
-       *
-       * No hay que cambiar el código entre entornos.
-       */
-      const url = new URL(
-        "./audio.html",
-        window.location.href
-      );
-
-      url.searchParams.set("id", id);
-      url.searchParams.set("nombre", nombre);
-      url.searchParams.set("alumno", alumno);
-      url.searchParams.set("modulo", modulo);
-
-      enlaceGenerado = url.toString();
-
-      verResultado.disabled = false;
-      copiar.disabled = false;
-
-      mensaje.style.display = "none";
-    });
-
-    verResultado.addEventListener("click", function () {
-      if (!enlaceGenerado) {
-        return;
-      }
-
-      window.open(
-        enlaceGenerado,
-        "_blank",
-        "noopener,noreferrer"
-      );
-    });
-
-    copiar.addEventListener("click", async function () {
-      if (!enlaceGenerado) {
-        return;
-      }
-
-      try {
-        await navigator.clipboard.writeText(enlaceGenerado);
-
-        mensaje.textContent =
-          "Enlace copiado al portapapeles.";
-
-        mensaje.style.display = "block";
-
-      } catch (error) {
-        const textarea = document.createElement("textarea");
-
-        textarea.value = enlaceGenerado;
-
-        document.body.appendChild(textarea);
-
-        textarea.select();
-
-        document.execCommand("copy");
-
-        textarea.remove();
-
-        mensaje.textContent =
-          "Enlace copiado al portapapeles.";
-
-        mensaje.style.display = "block";
-      }
-    });
-  </script>
+  <script src="./js/generator.js"></script>
 
 </body>
 </html>

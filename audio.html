@@ -8,102 +8,25 @@
 
   <meta name="robots" content="noindex,nofollow">
 
-  <style>
-    :root {
-      color-scheme: light;
-      --bg: #f5f7fb;
-      --card: #ffffff;
-      --text: #172033;
-      --muted: #687386;
-      --border: #e4e8f0;
-      --accent: #2563eb;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      padding: 24px;
-      background: var(--bg);
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      color: var(--text);
-    }
-
-    .card {
-      width: min(620px, 100%);
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 28px;
-      box-shadow: 0 12px 35px rgba(15, 23, 42, .08);
-    }
-
-    .icon {
-      width: 48px;
-      height: 48px;
-      display: grid;
-      place-items: center;
-      border-radius: 14px;
-      background: #eef4ff;
-      font-size: 25px;
-      margin-bottom: 14px;
-    }
-
-    h1 {
-      margin: 0 0 16px;
-      font-size: 1.55rem;
-    }
-
-    p {
-      margin: 0 0 20px;
-      color: var(--muted);
-      line-height: 1.5;
-    }
-
-    .mensaje {
-      color: var(--text);
-    }
-
-    .escuchar {
-      margin-bottom: 12px;
-      font-weight: 600;
-      color: var(--text);
-    }
-
-    .player {
-      width: 100%;
-      min-height: 100px;
-      border: 0;
-      border-radius: 12px;
-      background: #fafafa;
-    }
-
-    .error {
-      display: none;
-      padding: 14px 16px;
-      border: 1px solid #fecaca;
-      background: #fff1f2;
-      color: #991b1b;
-      border-radius: 10px;
-      line-height: 1.45;
-    }
-  </style>
+  <link rel="stylesheet" href="./css/styles.css">
 </head>
 
 <body>
 
-  <main class="card">
+  <main class="card audio-card">
 
-    <div class="icon">🎧</div>
+    <div class="icon">
+      🎧
+    </div>
 
-    <h1 id="saludo">Kaixo:</h1>
+    <h1 id="saludo">
+      Kaixo:
+    </h1>
 
-    <p id="mensaje" class="mensaje">
+    <p
+      id="mensajeAudio"
+      class="audio-message"
+    >
       Zure irakasleak ahots-ohar bat bidali dizu...
     </p>
 
@@ -118,60 +41,16 @@
       allow="autoplay">
     </iframe>
 
-    <div id="error" class="error">
+    <div
+      id="error"
+      class="error"
+    >
       Ezin izan da audioa aurkitu.
     </div>
 
   </main>
 
-  <script>
-    const params = new URLSearchParams(window.location.search);
-
-    let id = params.get("id");
-
-    const nombre = params.get("nombre");
-    const alumno = params.get("alumno");
-    const modulo = params.get("modulo");
-
-    if (!id) {
-      const url = params.get("url");
-
-      if (url) {
-        const match = url.match(
-          /(?:voca\.ro|vocaroo\.com)\/(?:embed\/)?([A-Za-z0-9]+)/i
-        );
-
-        if (match) {
-          id = match[1];
-        }
-      }
-    }
-
-    const saludo = document.getElementById("saludo");
-    const mensaje = document.getElementById("mensaje");
-    const player = document.getElementById("player");
-    const error = document.getElementById("error");
-
-    if (alumno) {
-      saludo.textContent = `Kaixo ${alumno}:`;
-    }
-
-    if (nombre && modulo) {
-      mensaje.textContent =
-        `${nombre}, zure ${modulo} irakaslea ahots-ohar bat bidali dizu...`;
-    } else if (nombre) {
-      mensaje.textContent =
-        `${nombre}, zure irakaslea ahots-ohar bat bidali dizu...`;
-    }
-
-    if (id && /^[A-Za-z0-9]+$/.test(id)) {
-      player.src =
-        `https://vocaroo.com/embed/${id}?autoplay=0`;
-    } else {
-      player.style.display = "none";
-      error.style.display = "block";
-    }
-  </script>
+  <script src="./js/audio.js"></script>
 
 </body>
 </html>
