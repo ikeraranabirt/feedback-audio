@@ -279,6 +279,51 @@ button:disabled {
 
 
 /* =========================
+   RECORDER
+   ========================= */
+
+.recorder {
+  margin: 24px 0;
+
+  padding: 20px;
+
+  background: var(--accent-soft);
+
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+
+.recorder h2 {
+  margin-bottom: 16px;
+}
+
+
+.recorder-actions {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 12px;
+}
+
+
+#estadoGrabacion {
+  margin: 14px 0 0;
+
+  color: var(--muted);
+
+  font-size: .92rem;
+}
+
+
+#audioPreview {
+  width: 100%;
+
+  margin-top: 14px;
+}
+
+/* =========================
    RESULT
    ========================= */
 
@@ -422,6 +467,10 @@ button:disabled {
 
 
   .acciones {
+    grid-template-columns: 1fr;
+  }
+
+    .recorder-actions {
     grid-template-columns: 1fr;
   }
 

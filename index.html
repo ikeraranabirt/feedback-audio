@@ -16,6 +16,7 @@
     <header class="page-header">
 
       <div class="header-content">
+
         <h1 data-i18n="generatorTitle">
           Ahots-oharren sortzailea
         </h1>
@@ -26,6 +27,7 @@
         >
           Sartu datuak eta Vocaroo grabazioaren esteka.
         </p>
+
       </div>
 
       <div
@@ -117,6 +119,46 @@
         >
 
       </div>
+
+
+      <section class="recorder">
+
+        <h2>
+          Ahots-oharra grabatu
+        </h2>
+
+        <div class="recorder-actions">
+
+          <button
+            type="button"
+            id="grabar"
+            class="btn-primary"
+          >
+            🎙 Grabatu
+          </button>
+
+          <button
+            type="button"
+            id="detener"
+            class="btn-secondary"
+            disabled
+          >
+            ⏹ Gelditu
+          </button>
+
+        </div>
+
+        <p id="estadoGrabacion">
+          Grabatzeko prest.
+        </p>
+
+        <audio
+          id="audioPreview"
+          controls
+          hidden
+        ></audio>
+
+      </section>
 
 
       <div class="field">
