@@ -10,6 +10,12 @@ const estadoGrabacion =
 const audioPreview =
   document.getElementById("audioPreview");
 
+const subirAudio =
+  document.getElementById("subirAudio");
+
+const CLOUD_NAME = "jvgd0byu";
+
+const UPLOAD_PRESET = "ahots-oharrak";
 
 let mediaRecorder = null;
 
@@ -148,11 +154,12 @@ async function iniciarGrabacion() {
 
         audioPreview.hidden =
           false;
-
+        subirAudio.disabled = false;
 
         estadoGrabacion.textContent =
           "Grabazioa amaitu da. Entzun dezakezu.";
 
+        
 
         /*
          * Liberamos el micrófono.
@@ -257,4 +264,97 @@ grabar.addEventListener(
 detener.addEventListener(
   "click",
   detenerGrabacion
+);
+
+async function subirGrabacion() {
+
+  if (!window.audioGrabadoBlob) {
+    return;
+  }
+
+
+  subirAudio.disabled =
+    true;
+
+
+  estadoGrabacion.textContent =
+    "Audioa igotzen...";
+
+
+  const formData =
+    new FormData();
+
+
+  formData.append(
+    "file",
+    window.audioGrabadoBlob
+  );
+
+
+  formData.append(
+    "upload_preset",
+    UPLOAD_PRESET
+  );
+
+
+  try {
+
+    const response =
+      await fetch(
+        `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/video/upload`,
+        {
+          method: "POST",
+          body: formData
+        }
+      );
+
+
+    if (!response.ok) {
+
+      throw new Error(
+        "Errorea Cloudinary-ra igotzean"
+      );
+
+    }
+
+
+    const data =
+      await response.json();
+
+
+    window.audioUrl =
+      data.secure_url;
+
+
+    console.log(
+      "Audioaren URL:",
+      window.audioUrl
+    );
+
+
+    estadoGrabacion.textContent =
+      "✅ Audioa behar bezala igo da.";
+
+  } catch (error) {
+
+    console.error(
+      error
+    );
+
+
+    estadoGrabacion.textContent =
+      "❌ Ezin izan da audioa igo.";
+
+
+    subirAudio.disabled =
+      false;
+
+  }
+
+}
+
+
+subirAudio.addEventListener(
+  "click",
+  subirGrabacion
 );
