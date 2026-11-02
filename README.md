@@ -2,7 +2,7 @@
 
 Aplicación web sencilla para enviar notas de voz personalizadas.
 
-La aplicación utiliza [**Vocaroo**](https://vocaroo.com/) para grabar y alojar el audio y genera una página personalizada desde la que el alumno puede escuchar la grabación.
+La aplicación permite grabar audio desde el navegador, subirlo a Cloudinary y generar una página personalizada desde la que el alumno puede escuchar la grabación.
 
 La interfaz está disponible en:
 
@@ -15,38 +15,22 @@ Puedes visitar la aplicación en [este URL](https://ikeraranabirt.github.io/feed
 
 ## Funcionamiento
 
-El proceso consta de cuatro pasos:
+El proceso consta de estos pasos:
 
-1. Grabar una nota de voz en Vocaroo.
-2. Copiar el enlace generado por Vocaroo.
-3. Introducir los datos en Feedback Audio.
-4. Copiar y enviar al alumno el enlace generado.
+1. Introducir los datos del profesor, el alumno y el módulo.
+2. Grabar una nota de voz y subirla.
+3. Generar el enlace personalizado.
+4. Comprobar el resultado y copiar el enlace para enviarlo al alumno.
 
 ---
 
-## 1. Grabar el audio en Vocaroo
+## Grabar y subir el audio
 
-Accede a [**Vocaroo**](https://vocaroo.com/)
-
-Pulsa el botón de grabación y graba el mensaje de voz.
+Pulsa **Grabar** y concede permiso para utilizar el micrófono. Cuando termines, detén la grabación y escucha la vista previa si lo deseas. Después, pulsa **Subir audio** para alojar la grabación en Cloudinary.
 
 <!-- INSERTAR IMAGEN 1 -->
 
-Cuando termines, detén la grabación.
-
-Puedes escuchar el resultado antes de continuar.
-
----
-
-## 2. Copiar el enlace
-
-Una vez guardada la grabación, Vocaroo genera un enlace similar a:
-
-```text
-https://voca.ro/XXXXXXXXXXXX
-```
----
-## 3. Generar el enlace para el alumno
+## Generar el enlace para el alumno
 
 Accede a Feedback Audio:
 
@@ -61,16 +45,9 @@ El idioma seleccionado también determinará el idioma de la página que recibir
 
 <!-- IMAGEN: Selector de idioma de Feedback Audio -->
 
-A continuación, completa el formulario con los siguientes datos:
+A continuación, completa el formulario con los datos del profesor, el alumno y el módulo. Tras subir el audio, el enlace queda preparado automáticamente si los datos están completos.
 
-
-Pega en el último campo el enlace que has copiado previamente desde Vocaroo.
-
-Después pulsa Generar enlace.
-
-<!-- IMAGEN: Formulario cumplimentado -->
----
-## 4. Comprobar y copiar el resultado
+## Comprobar y copiar el resultado
 
 Después de generar correctamente el enlace se habilitarán dos opciones.
 
@@ -87,6 +64,10 @@ De esta forma puedes comprobar tanto el mensaje personalizado como la grabación
 Pulsa Copiar enlace para el alumno.
 
 El enlace quedará copiado en el portapapeles y podrás pegarlo directamente en un correo electrónico, mensaje o plataforma educativa.
+
+### 🔄 Reiniciar
+
+Pulsa **Reiniciar y grabar otro audio** para vaciar el formulario y la grabación y empezar de nuevo.
 
 ### 👨‍🎓 ¿Qué recibe el alumno?
 

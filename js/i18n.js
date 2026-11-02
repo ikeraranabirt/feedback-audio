@@ -6,7 +6,7 @@ const translations = {
       "Ahots-ohar sortzailea",
 
     generatorIntro:
-      "Sartu datuak eta Vocaroo grabazioaren esteka.",
+      "Sartu datuak, grabatu audioa eta igo.",
 
     teacherName:
       "Irakaslearen izena",
@@ -26,17 +26,47 @@ const translations = {
     modulePlaceholder:
       "Adib. DWEC",
 
-    vocarooLink:
-      "Vocaroo esteka",
+    recorderTitle:
+      "Ahots-oharra grabatu",
 
-    generateLink:
-      "Esteka sortu",
+    record:
+      "🎙 Grabatu",
+
+    stop:
+      "⏹ Gelditu",
+
+    uploadAudio:
+      "☁ Audioa igo",
+
+    statusReady:
+      "Grabatzeko prest.",
+
+    statusRecording:
+      "🔴 Grabatzen...",
+
+    statusRecorded:
+      "Grabazioa amaitu da. Entzun dezakezu.",
+
+    statusUploading:
+      "Audioa igotzen...",
+
+    statusUploaded:
+      "✅ Audioa behar bezala igo da.",
+
+    statusUploadError:
+      "❌ Ezin izan da audioa igo.",
+
+    statusUnsupported:
+      "Nabigatzaileak ezin du audioa grabatu.",
+
+    statusMicError:
+      "Ezin izan da mikrofonoa erabili.",
 
     resultTitle:
       "Emaitza",
 
     resultHelp:
-      "Sortu esteka lehenik. Ondoren emaitza egiaztatu edo ikaslearentzako esteka kopiatu ahal izango duzu.",
+      "Audioa igo ondoren, emaitza egiaztatu edo ikaslearentzako esteka kopiatu ahal izango duzu.",
 
     viewResult:
       "Emaitza ikusi",
@@ -47,8 +77,8 @@ const translations = {
     copied:
       "Esteka arbelean kopiatu da.",
 
-    invalidVocaroo:
-      "Sartu baliozko Vocaroo esteka bat.",
+    reset:
+      "Berrezarri eta beste audio bat grabatu",
 
     greeting:
       alumno => `Kaixo ${alumno}:`,
@@ -76,7 +106,7 @@ const translations = {
       "Generador de notas de voz",
 
     generatorIntro:
-      "Introduce los datos y el enlace de la grabación de Vocaroo.",
+      "Introduce los datos, graba el audio y súbelo.",
 
     teacherName:
       "Nombre del profesor",
@@ -96,17 +126,47 @@ const translations = {
     modulePlaceholder:
       "Ej. DWEC",
 
-    vocarooLink:
-      "Enlace de Vocaroo",
+    recorderTitle:
+      "Grabar nota de voz",
 
-    generateLink:
-      "Generar enlace",
+    record:
+      "🎙 Grabar",
+
+    stop:
+      "⏹ Detener",
+
+    uploadAudio:
+      "☁ Subir audio",
+
+    statusReady:
+      "Listo para grabar.",
+
+    statusRecording:
+      "🔴 Grabando...",
+
+    statusRecorded:
+      "Grabación terminada. Puedes escucharla.",
+
+    statusUploading:
+      "Subiendo audio...",
+
+    statusUploaded:
+      "✅ Audio subido correctamente.",
+
+    statusUploadError:
+      "❌ No se ha podido subir el audio.",
+
+    statusUnsupported:
+      "El navegador no puede grabar audio.",
+
+    statusMicError:
+      "No se ha podido usar el micrófono.",
 
     resultTitle:
       "Resultado",
 
     resultHelp:
-      "Genera primero el enlace. Después podrás comprobar el resultado o copiar el enlace que enviarás al alumno.",
+      "Tras subir el audio, podrás comprobar el resultado o copiar el enlace que enviarás al alumno.",
 
     viewResult:
       "Ver resultado",
@@ -117,8 +177,8 @@ const translations = {
     copied:
       "Enlace copiado al portapapeles.",
 
-    invalidVocaroo:
-      "Introduce un enlace válido de Vocaroo.",
+    reset:
+      "Reiniciar y grabar otro audio",
 
     greeting:
       alumno => `Hola ${alumno}:`,

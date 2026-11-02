@@ -4,8 +4,8 @@ const params =
   );
 
 
-let id =
-  params.get("id");
+const audioUrl =
+  params.get("audioUrl");
 
 
 const nombre =
@@ -46,36 +46,23 @@ const error =
   );
 
 
-function obtenerIdDesdeUrl() {
-
-  const url =
-    params.get("url");
-
-  if (!url) {
-    return null;
-  }
-
-
-  const match =
-    url.match(
-      /(?:voca\.ro|vocaroo\.com)\/(?:embed\/)?([A-Za-z0-9]+)/i
-    );
-
-
-  if (!match) {
-    return null;
-  }
-
-
-  return match[1];
-}
-
-
 function mostrarMensaje() {
 
   aplicarIdioma(
     lang
   );
+
+  if (!alumno) {
+    saludo.style.display = "none";
+  }
+
+  if (!nombre) {
+    mensajeAudio.style.display = "none";
+  }
+
+  if (!alumno && !nombre) {
+    document.querySelector(".escuchar").style.display = "none";
+  }
 
 
   if (alumno) {
@@ -119,25 +106,23 @@ function mostrarMensaje() {
 
 function cargarAudio() {
 
-  if (!id) {
+  let url;
 
-    id =
-      obtenerIdDesdeUrl();
-
+  try {
+    url = new URL(audioUrl);
+  } catch {
+    url = null;
   }
-
 
   if (
-    id &&
-    /^[A-Za-z0-9]+$/.test(id)
+    url &&
+    url.protocol === "https:" &&
+    url.hostname === "res.cloudinary.com" &&
+    url.pathname.startsWith("/jvgd0byu/video/upload/")
   ) {
-
-    player.src =
-      `https://vocaroo.com/embed/${id}?autoplay=0`;
-
+    player.src = url.toString();
     return;
   }
-
 
   player.style.display =
     "none";

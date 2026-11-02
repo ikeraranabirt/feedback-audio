@@ -39,6 +39,10 @@ function cambiarIdioma(lang) {
 
   mensaje.style.display =
     "none";
+
+  window.dispatchEvent(
+    new Event("languageChanged")
+  );
 }
 
 
@@ -58,22 +62,8 @@ languageButtons.forEach(button => {
 });
 
 
-function obtenerIdVocaroo(url) {
-
-  const match = url.match(
-    /(?:voca\.ro|vocaroo\.com)\/(?:embed\/)?([A-Za-z0-9]+)/i
-  );
-
-  if (!match) {
-    return null;
-  }
-
-  return match[1];
-}
-
-
 function generarUrlAudio({
-  id,
+  audioUrl,
   nombre,
   alumno,
   modulo,
@@ -85,29 +75,22 @@ function generarUrlAudio({
     window.location.href
   );
 
-  url.searchParams.set(
-    "id",
-    id
-  );
+  const datos = { nombre, alumno, modulo };
 
-  url.searchParams.set(
-    "nombre",
-    nombre
-  );
-
-  url.searchParams.set(
-    "alumno",
-    alumno
-  );
-
-  url.searchParams.set(
-    "modulo",
-    modulo
-  );
+  Object.entries(datos).forEach(([clave, valor]) => {
+    if (valor) {
+      url.searchParams.set(clave, valor);
+    }
+  });
 
   url.searchParams.set(
     "lang",
     lang
+  );
+
+  url.searchParams.set(
+    "audioUrl",
+    audioUrl
   );
 
   return url.toString();
@@ -125,6 +108,80 @@ function activarAcciones() {
   mensaje.style.display =
     "none";
 }
+
+function actualizarEnlace() {
+
+  const nombre =
+    document
+      .getElementById("nombre")
+      .value
+      .trim();
+
+  const alumno =
+    document
+      .getElementById("alumno")
+      .value
+      .trim();
+
+  const modulo =
+    document
+      .getElementById("modulo")
+      .value
+      .trim();
+
+  if (!window.audioUrl || !form.checkValidity()) {
+    desactivarAcciones();
+    return false;
+  }
+
+  enlaceGenerado =
+    generarUrlAudio({
+      audioUrl: window.audioUrl,
+      nombre,
+      alumno,
+      modulo,
+      lang: idiomaActual
+    });
+
+  activarAcciones();
+  return true;
+}
+
+function desactivarAcciones() {
+
+  enlaceGenerado = "";
+  verResultado.disabled = true;
+  copiar.disabled = true;
+  mensaje.style.display = "none";
+}
+
+window.addEventListener(
+  "audioUploaded",
+  actualizarEnlace
+);
+
+window.addEventListener(
+  "audioUploadCleared",
+  desactivarAcciones
+);
+
+form.addEventListener(
+  "input",
+  function () {
+    if (window.audioUrl) {
+      actualizarEnlace();
+    } else {
+      desactivarAcciones();
+    }
+  }
+);
+
+form.addEventListener(
+  "submit",
+  function (event) {
+    event.preventDefault();
+  }
+);
 
 
 async function copiarAlPortapapeles(texto) {
@@ -161,76 +218,22 @@ async function copiarAlPortapapeles(texto) {
 }
 
 
-form.addEventListener(
-  "submit",
-  function (event) {
+document
+  .getElementById("reiniciar")
+  .addEventListener(
+    "click",
+    function () {
 
-    event.preventDefault();
+      form.reset();
 
-
-    const nombre =
-      document
-        .getElementById("nombre")
-        .value
-        .trim();
-
-
-    const alumno =
-      document
-        .getElementById("alumno")
-        .value
-        .trim();
-
-
-    const modulo =
-      document
-        .getElementById("modulo")
-        .value
-        .trim();
-
-
-    const vocaroo =
-      document
-        .getElementById("vocaroo")
-        .value
-        .trim();
-
-
-    const id =
-      obtenerIdVocaroo(
-        vocaroo
+      window.dispatchEvent(
+        new Event("reiniciar")
       );
 
+      desactivarAcciones();
 
-    if (!id) {
-
-      alert(
-        translations[
-          idiomaActual
-        ].invalidVocaroo
-      );
-
-      return;
     }
-
-
-    enlaceGenerado =
-      generarUrlAudio({
-
-        id,
-        nombre,
-        alumno,
-        modulo,
-        lang:
-          idiomaActual
-
-      });
-
-
-    activarAcciones();
-
-  }
-);
+  );
 
 
 verResultado.addEventListener(

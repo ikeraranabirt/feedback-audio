@@ -356,6 +356,11 @@ button:disabled {
 }
 
 
+.btn-reiniciar {
+  margin-top: 12px;
+}
+
+
 .mensaje {
   display: none;
 

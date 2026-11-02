@@ -25,6 +25,24 @@ let fragmentosAudio = [];
 
 let previewUrl = null;
 
+let estadoKey = "statusReady";
+
+// Se incrementa al reiniciar para ignorar subidas y grabaciones pendientes.
+let sesion = 0;
+
+function setEstado(key) {
+  estadoKey = key;
+  estadoGrabacion.textContent =
+    translations[idiomaActual][key];
+}
+
+window.addEventListener(
+  "languageChanged",
+  function () {
+    setEstado(estadoKey);
+  }
+);
+
 
 /*
  * Guardamos aquí el Blob de la grabación.
@@ -33,6 +51,7 @@ let previewUrl = null;
  * para subir el audio a Cloudinary.
  */
 window.audioGrabadoBlob = null;
+window.audioUrl = null;
 
 
 /**
@@ -48,8 +67,7 @@ async function iniciarGrabacion() {
       !window.MediaRecorder
     ) {
 
-      estadoGrabacion.textContent =
-        "Nabigatzaileak ezin du audioa grabatu.";
+      setEstado("statusUnsupported");
 
       return;
     }
@@ -71,6 +89,11 @@ async function iniciarGrabacion() {
     fragmentosAudio = [];
 
     window.audioGrabadoBlob = null;
+    window.audioUrl = null;
+    subirAudio.disabled = true;
+    window.dispatchEvent(
+      new Event("audioUploadCleared")
+    );
 
 
     if (previewUrl) {
@@ -125,9 +148,15 @@ async function iniciarGrabacion() {
      * Cuando detenemos la grabación,
      * construimos un Blob de audio.
      */
+    const sesionGrabacion = sesion;
+
     mediaRecorder.addEventListener(
       "stop",
       function () {
+
+        if (sesionGrabacion !== sesion) {
+          return;
+        }
 
         const mimeType =
           mediaRecorder.mimeType ||
@@ -156,8 +185,7 @@ async function iniciarGrabacion() {
           false;
         subirAudio.disabled = false;
 
-        estadoGrabacion.textContent =
-          "Grabazioa amaitu da. Entzun dezakezu.";
+        setEstado("statusRecorded");
 
         
 
@@ -187,8 +215,7 @@ async function iniciarGrabacion() {
       false;
 
 
-    estadoGrabacion.textContent =
-      "🔴 Grabatzen...";
+    setEstado("statusRecording");
 
   } catch (error) {
 
@@ -198,8 +225,7 @@ async function iniciarGrabacion() {
     );
 
 
-    estadoGrabacion.textContent =
-      "Ezin izan da mikrofonoa erabili.";
+    setEstado("statusMicError");
 
 
     grabar.disabled =
@@ -266,6 +292,53 @@ detener.addEventListener(
   detenerGrabacion
 );
 
+function reiniciarGrabacion() {
+
+  sesion++;
+
+  if (
+    mediaRecorder &&
+    mediaRecorder.state === "recording"
+  ) {
+    mediaRecorder.stop();
+  }
+
+  if (streamActual) {
+    streamActual
+      .getTracks()
+      .forEach(track => track.stop());
+
+    streamActual = null;
+  }
+
+  mediaRecorder = null;
+
+  fragmentosAudio = [];
+
+  window.audioGrabadoBlob = null;
+  window.audioUrl = null;
+
+  if (previewUrl) {
+    URL.revokeObjectURL(previewUrl);
+    previewUrl = null;
+  }
+
+  audioPreview.hidden = true;
+  audioPreview.removeAttribute("src");
+
+  grabar.disabled = false;
+  detener.disabled = true;
+  subirAudio.disabled = true;
+
+  setEstado("statusReady");
+}
+
+window.addEventListener(
+  "reiniciar",
+  reiniciarGrabacion
+);
+
+
 async function subirGrabacion() {
 
   if (!window.audioGrabadoBlob) {
@@ -277,8 +350,9 @@ async function subirGrabacion() {
     true;
 
 
-  estadoGrabacion.textContent =
-    "Audioa igotzen...";
+  setEstado("statusUploading");
+
+  const sesionSubida = sesion;
 
 
   const formData =
@@ -321,6 +395,16 @@ async function subirGrabacion() {
     const data =
       await response.json();
 
+    if (!data.secure_url) {
+      throw new Error(
+        "Cloudinary-k ez du audioaren URLrik itzuli"
+      );
+    }
+
+
+    if (sesionSubida !== sesion) {
+      return;
+    }
 
     window.audioUrl =
       data.secure_url;
@@ -332,8 +416,13 @@ async function subirGrabacion() {
     );
 
 
-    estadoGrabacion.textContent =
-      "✅ Audioa behar bezala igo da.";
+    setEstado("statusUploaded");
+
+    window.dispatchEvent(
+      new Event("audioUploaded")
+    );
+
+    subirAudio.disabled = true;
 
   } catch (error) {
 
@@ -341,9 +430,11 @@ async function subirGrabacion() {
       error
     );
 
+    if (sesionSubida !== sesion) {
+      return;
+    }
 
-    estadoGrabacion.textContent =
-      "❌ Ezin izan da audioa igo.";
+    setEstado("statusUploadError");
 
 
     subirAudio.disabled =
